@@ -50,14 +50,15 @@ jobs:
           rm -rf "$repo_name"
         done
 
-          
     - name: Apply Branch Protection Rules
+      env:
+        RULESET_TOKEN: ${{ secrets.RULESET_GIT }}
       run: |
         IFS=' ' read -r -a urls <<< "$repository_urls"
         for repo_url in "${urls[@]}"; do
           repo_name=$(basename "$repo_url" .git)
           echo "Applying protection rules to: ${repo_name}"
-          curl -X PUT -H "Authorization: token ${{ secrets.RULESET_GIT }}" \
+          curl -X PUT -H "Authorization: token $RULESET_TOKEN" \
           -H "Accept: application/vnd.github.v3+json" \
           -d '{
             "required_status_checks": {
@@ -78,5 +79,5 @@ jobs:
             "allow_force_pushes": false,
             "allow_deletions": false
           }' \
-          "https://api.github.com/repos/${repo_name}/branches/${{ github.event.inputs.branch_name }}/protection" || { echo "Failed to apply protection rules for ${repo_name}"; exit 1; }
-
+          "https://api.github.com/repos/${repo_name}/branches/${{ github.event.inputs.branch_name }}/protection" \
+          || { echo "Failed to apply protection rules for ${repo_name}"; exit 1; }
