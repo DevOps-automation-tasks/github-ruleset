@@ -62,10 +62,21 @@ jobs:
           owner_repo=${repo_url#https://github.com/}
           echo "Processing repository: ${repo_name}"
           echo "Owner and Repo: $owner_repo" # Debug output
+
+          # Extract owner and repo name
+          owner=$(echo $owner_repo | cut -d'/' -f1)
+          repo=$(echo $owner_repo | cut -d'/' -f2)
+
+          # Construct API URL
+          api_url="https://api.github.com/repos/${owner}/${repo}/branches/${{ github.event.inputs.branch_name }}/protection"
+          echo "API URL: $api_url" # Debug output
+
+      
+
           
           # Construct API URL
-          api_url="https://api.github.com/repos/${owner_repo}/branches/${{ github.event.inputs.branch_name }}/protection"
-          echo "API URL: $api_url"
+          #api_url="https://api.github.com/repos/${owner_repo}/branches/${{ github.event.inputs.branch_name }}/protection"
+          #echo "API URL: $api_url"
 
           # Apply protection rules
           curl -X PUT -H "Authorization: token ${{ secrets.RULESET_GIT }}" \
