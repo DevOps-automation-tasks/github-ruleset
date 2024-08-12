@@ -26,14 +26,24 @@ jobs:
         done < "$REPO_FILE"
         echo "repository_urls=${repository_urls[*]}" >> $GITHUB_ENV
 
-    - name: Clone Repositories and Create Branch
+    - name: Clone Repositories, Create Branch, and Push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         for repo_url in ${repository_urls[@]}; do
           repo_name=$(basename "$repo_url" .git)
-          git clone "$repo_url"
+          
+          # Clone the repository using the GitHub token for authentication
+          git clone https://x-access-token:${GITHUB_TOKEN}@${repo_url#https://}
+          
           cd "$repo_name"
+          
+          # Create the new branch
           git checkout -b ${{ github.event.inputs.branch_name }}
-          git push origin ${{ github.event.inputs.branch_name }}
+          
+          # Push the branch using the GitHub token for authentication
+          git push https://x-access-token:${GITHUB_TOKEN}@${repo_url#https://} ${{ github.event.inputs.branch_name }}
+
           cd ..
           rm -rf "$repo_name"
         done
