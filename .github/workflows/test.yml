@@ -32,9 +32,9 @@ jobs:
       run: |
         for repo_url in ${repository_urls[@]}; do
           repo_name=$(basename "$repo_url" .git)
-      
+          
           # Clone the repository using the Personal Access Token for authentication
-          git clone https://x-access-token:${PERSONAL_ACCESS_TOKEN}@${repo_url#https://}
+          git clone https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/${repo_name}.git
           
           cd "$repo_name"
           
@@ -42,20 +42,19 @@ jobs:
           git checkout -b ${{ github.event.inputs.branch_name }}
           
           # Push the branch using the Personal Access Token for authentication
-          git push https://x-access-token:${PERSONAL_ACCESS_TOKEN}@${repo_url#https://} ${{ github.event.inputs.branch_name }}
-     
+          git push https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/${repo_name}.git ${{ github.event.inputs.branch_name }}
+
           cd ..
           rm -rf "$repo_name"
         done
-
 
     - name: Apply Branch Protection Rules
       run: |
         for repo_url in ${repository_urls[@]}; do
           repo_name=$(basename "$repo_url" .git)
-          curl -X PUT -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          curl -X PUT -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
-          "https://api.github.com/repos/red-hat-data-services/$repo_name/branches/${{ github.event.inputs.branch_name }}/protection" \
+          "https://api.github.com/repos/${repo_name}/branches/${{ github.event.inputs.branch_name }}/protection" \
           -d '{
             "required_status_checks": {
               "strict": true,
