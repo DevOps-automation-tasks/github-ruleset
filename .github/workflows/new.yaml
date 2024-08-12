@@ -60,6 +60,7 @@ jobs:
           repo_name=$(basename "$repo_url" .git)
           echo "Applying protection rules to: ${repo_name}"
           owner_repo=${repo_url#https://github.com/}
+          owner_repo=${owner_repo%.git} # Remove .git extension
           echo "Processing repository: ${repo_name}"
           echo "Owner and Repo: $owner_repo" # Debug output
 
