@@ -51,9 +51,11 @@ jobs:
         done
 
     - name: Apply Branch Protection Rules
+      env:
+        RULESET_TOKEN: ${{ secrets.RULESET_GIT }}
       run: |
-        IFS=$'\n' read -r -a urls <<< "$repository_urls"
-        for repo_url in "${urls[@]}"; do
+        echo "Repository URLs: $repository_urls" # Debug output
+        while IFS= read -r repo_url; do
           repo_name=$(basename "$repo_url" .git)
           echo "Applying protection rules to: ${repo_name}"
           
