@@ -27,15 +27,13 @@ jobs:
         echo "repository_urls=${repository_urls[*]}" >> $GITHUB_ENV
 
     - name: Clone Repositories, Create Branch, and Push
-      env:
-        PERSONAL_ACCESS_TOKEN: ${{ secrets.RULESET_TOKEN }}
       run: |
         for repo_url in ${repository_urls[@]}; do
           echo "Processing repository: $repo_url"
           repo_name=$(basename "$repo_url" .git)
           
           # Clone the repository using the Personal Access Token for authentication
-          git clone https://x-access-token:${PERSONAL_ACCESS_TOKEN}@${repo_url#https://}
+          git clone https://x-access-token:${RULESET_TOKEN}@${repo_url#https://}
           
           cd "$repo_name"
           
@@ -43,7 +41,7 @@ jobs:
           git checkout -b ${{ github.event.inputs.branch_name }}
           
           # Push the branch using the Personal Access Token for authentication
-          git push https://x-access-token:${PERSONAL_ACCESS_TOKEN}@${repo_url#https://} ${{ github.event.inputs.branch_name }}
+          git push https://x-access-token:${RULESET_TOKEN}@${repo_url#https://} ${{ github.event.inputs.branch_name }}
 
           cd ..
           rm -rf "$repo_name"
@@ -53,7 +51,7 @@ jobs:
       run: |
         for repo_url in ${repository_urls[@]}; do
           repo_name=$(basename "$repo_url" .git)
-          curl -X PUT -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+          curl -X PUT -H "Authorization: token ${{ secrets.RULESET_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
           "https://api.github.com/repos/${repo_name}/branches/${{ github.event.inputs.branch_name }}/protection" \
           -d '{
