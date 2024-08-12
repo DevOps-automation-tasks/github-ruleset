@@ -28,7 +28,7 @@ jobs:
 
     - name: Clone Repositories, Create Branch, and Push
       env:
-        PERSONAL_ACCESS_TOKEN: ${{ secrets.RULESET_TOKEN }}
+        PERSONAL_ACCESS_TOKEN: ${{ secrets.RULESETGH }}
       run: |
         for repo_url in ${repository_urls[@]}; do
           echo "Processing repository: $repo_url"
