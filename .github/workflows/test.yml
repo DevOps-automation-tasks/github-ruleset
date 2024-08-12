@@ -28,7 +28,7 @@ jobs:
 
     - name: Clone Repositories, Create Branch, and Push
       env:
-        PERSONAL_ACCESS_TOKEN: ${{ secrets.RULESETGH }}
+        PERSONAL_ACCESS_TOKEN: ${{ secrets.RULESET_GIT }}
       run: |
         IFS=' ' read -r -a urls <<< "$repository_urls"
         for repo_url in "${urls[@]}"; do
