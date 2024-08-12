@@ -1,0 +1,2 @@
+https://github.com/DevOps-automation-tasks/odh-model-controller.git
+https://github.com/DevOps-automation-tasks/caikit-nlp.git
