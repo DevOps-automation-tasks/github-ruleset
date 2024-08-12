@@ -26,21 +26,33 @@ jobs:
         done < "$REPO_FILE"
         echo "repository_urls=${repository_urls[*]}" >> $GITHUB_ENV
 
-    - name: Apply Stricter Branch Protection Rules
+    - name: Check Branch Existence and Apply Protection Rules
       env:
         RULESET_TOKEN: ${{ secrets.RULESET_GIT }}
       run: |
         IFS=' ' read -r -a urls <<< "$repository_urls"
         for repo_url in "${urls[@]}"; do
           repo_name=$(basename "$repo_url" .git)
-          echo "Applying stricter protection rules to: ${repo_name}"
+          echo "Processing repository: ${repo_name}"
+
+          # Construct API URL for checking the branch
+          branch_check_url="https://api.github.com/repos/DevOps-automation-tasks/$repo_name/branches/${{ github.event.inputs.branch_name }}"
           
-          # Construct API URL for the specified branch
+          # Check if the branch exists
+          branch_check_response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $RULESET_TOKEN" "$branch_check_url")
+          if [ "$branch_check_response" -ne 200 ]; then
+            echo "Branch ${{ github.event.inputs.branch_name }} does not exist in ${repo_name}. Exiting."
+            exit 1
+          fi
+          
+          echo "Branch ${{ github.event.inputs.branch_name }} exists in ${repo_name}."
+
+          # Construct API URL for applying protection rules
           api_url="https://api.github.com/repos/DevOps-automation-tasks/$repo_name/branches/${{ github.event.inputs.branch_name }}/protection"
           echo "API URL: $api_url"
 
           # Apply stricter protection rules
-          curl -X PUT -H "Authorization: token ${{ secrets.RULESET_GIT }}" \
+          curl -X PUT -H "Authorization: token $RULESET_TOKEN" \
                -H "Accept: application/vnd.github.v3+json" \
                -d '{
                  "required_status_checks": {
