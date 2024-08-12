@@ -35,7 +35,7 @@ jobs:
           repo_name=$(basename "$repo_url" .git)
           
           # Clone the repository using the Personal Access Token for authentication
-          git clone https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/DevOps-automation-tasks/$repo_name.git
+          git clone https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/rhoai-rhtap/modelmesh-serving.git
           
           cd "$repo_name"
           
