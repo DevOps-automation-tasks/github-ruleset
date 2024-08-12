@@ -54,7 +54,7 @@ jobs:
       env:
         RULESET_TOKEN: ${{ secrets.RULESET_GIT }}
       run: |
-        IFS=' ' read -r -a urls <<< "$repository_urls"
+        IFS= read -r -a urls <<< "$repository_urls"
         for repo_url in "${urls[@]}"; do
           repo_name=$(basename "$repo_url" .git)
           echo "Applying protection rules to: ${repo_name}"
