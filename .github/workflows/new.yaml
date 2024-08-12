@@ -30,12 +30,12 @@ jobs:
       env:
         PERSONAL_ACCESS_TOKEN: ${{ secrets.RULESET_GIT }}
       run: |
-        IFS=$'\n' read -r -a urls <<< "$repository_urls"
+        IFS=' ' read -r -a urls <<< "$repository_urls"
         for repo_url in "${urls[@]}"; do
           echo "Processing repository: $repo_url"
           repo_name=$(basename "$repo_url" .git)
           
-          # Clone the repository
+          # Clone the repository using the Personal Access Token for authentication
           git clone https://x-access-token:${PERSONAL_ACCESS_TOKEN}@${repo_url#https://}
           
           cd "$repo_name"
@@ -43,7 +43,7 @@ jobs:
           # Create the new branch
           git checkout -b ${{ github.event.inputs.branch_name }}
           
-          # Push the branch
+          # Push the branch using the Personal Access Token for authentication
           git push https://x-access-token:${PERSONAL_ACCESS_TOKEN}@${repo_url#https://} ${{ github.event.inputs.branch_name }}
     
           cd ..
