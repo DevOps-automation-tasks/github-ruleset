@@ -35,7 +35,7 @@ jobs:
           repo_name=$(basename "$repo_url" .git)
           
           # Clone the repository using the Personal Access Token for authentication
-          git clone https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/rhoai-rhtap/modelmesh-serving.git
+          git clone https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/DevOps-automation-tasks/modelmesh-serving.git
           
           cd "$repo_name"
           
@@ -43,7 +43,7 @@ jobs:
           git checkout -b ${{ github.event.inputs.branch_name }}
           
           # Push the branch using the Personal Access Token for authentication
-          git push https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/rhoai-rhtap/$repo_name.git ${{ github.event.inputs.branch_name }}
+          git push https://x-access-token:${PERSONAL_ACCESS_TOKEN}@github.com/DevOps-automation-tasks/$repo_name.git ${{ github.event.inputs.branch_name }}
     
           cd ..
           rm -rf "$repo_name"
