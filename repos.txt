@@ -1,1 +1,1 @@
-https://github.com/rhoai-rhtap/modelmesh-serving.git
+https://github.com/DevOps-automation-tasks/odh-model-controller.git
